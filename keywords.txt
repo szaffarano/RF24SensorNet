@@ -1,0 +1,28 @@
+RF24SensorNet KEYWORD1
+readVcc KEYWORD2
+
+addInfoReadHandler KEYWORD2
+addInfoWriteHandler KEYWORD2
+addInfoRcvHandler KEYWORD2
+readInfo KEYWORD2
+writeInfo KEYWORD2
+sendInfo KEYWORD2
+addPowerReadHandler KEYWORD2
+addPowerRcvHandler KEYWORD2
+readPower KEYWORD2
+sendPower KEYWORD2
+addSwitchReadHandler KEYWORD2
+addSwitchWriteHandler KEYWORD2
+addSwitchRcvHandler KEYWORD2
+readSwitch KEYWORD2
+writeSwitch KEYWORD2
+sendSwitch KEYWORD2
+addRgbReadHandler KEYWORD2
+addRgbWriteHandler KEYWORD2
+addRgbRcvHandler KEYWORD2
+readRgb KEYWORD2
+writeRgb KEYWORD2
+sendRgb KEYWORD2
+
+begin KEYWORD2
+update KEYWORD2
