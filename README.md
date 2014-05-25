@@ -9,6 +9,7 @@ Arduino-compatible MCU and an nRF24L01 radio module. Each node can have
 zero or more devices of the below types connected, each with a unique ID.
 
 There are three basic message types:
+
 * A request for data from a device. This request will contain the
   destination node address, the device type, and the device's ID.
 * A request to send data to a device (for example, turn a switch on).
@@ -36,6 +37,7 @@ All messages sent across the network are one-one.
 ## Usage
 ### Sending messages
 Each device type has three functions, to send each type of message.
+
 * **read\*** sends a message requesting data from a device.
 * **write\*** sends a message containing new data for devices that support
   being modified.
@@ -45,6 +47,7 @@ Each device type has three functions, to send each type of message.
 A node interested in receiving messages pertaining to a given device
 type must implement one or more callback functions, and register them
 with these functions:
+
 * **add\*ReadHandler** registers a callback that will receive requests
   for device data.
 * **add\*WriteHandler** registers a callback that will receive requests
