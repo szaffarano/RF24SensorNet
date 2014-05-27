@@ -160,3 +160,35 @@ void RF24SensorNet::_rgbHandler(RF24NetworkHeader header)
     }
   }
 }
+
+void RF24SensorNet::_tempHandler(RF24NetworkHeader header)
+{
+  pkt_temp_t payload;
+  _network.read(header, &payload, sizeof(payload));
+
+  if (header.type > 32) {
+    if (_tempReadHandler != NULL) {
+      _tempReadHandler(header.from_node, payload.id);
+    } 
+  } else {
+    if (_tempRcvHandler != NULL) {
+      _tempRcvHandler(header.from_node, payload.id, payload.temp);
+    }
+  }
+}
+
+void RF24SensorNet::_humidHandler(RF24NetworkHeader header)
+{
+  pkt_humid_t payload;
+  _network.read(header, &payload, sizeof(payload));
+
+  if (header.type > 32) {
+    if (_humidReadHandler != NULL) {
+      _humidReadHandler(header.from_node, payload.id);
+    }
+  } else {
+    if (_humidRcvHandler != NULL) {
+      _humidRcvHandler(header.from_node, payload.id, payload.humidity);
+    }
+  }
+}

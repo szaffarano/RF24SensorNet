@@ -61,6 +61,16 @@ class RF24SensorNet
   bool sendRgb(uint16_t toAddr, uint16_t id,
 	       char rgb[3], uint32_t timer);
 
+  void addTempReadHandler(tempReadHandler handler);
+  void addTempRcvHandler(tempRcvHandler handler);
+  bool readTemp(uint16_t toAddr, uint16_t id);
+  bool sendTemp(uint16_t toAddr, uint16_t id, int16_t temp);
+
+  void addHumidReadHandler(humidReadHandler handler);
+  void addHumidRcvHandler(humidRcvHandler handler);
+  bool readHumid(uint16_t toAddr, uint16_t id);
+  bool sendHumid(uint16_t toAddr, uint16_t id, uint16_t humidity);
+
   void begin();
   void update(void);
 
@@ -77,11 +87,17 @@ class RF24SensorNet
   rgbReadHandler _rgbReadHandler;
   rgbWriteHandler _rgbWriteHandler;
   rgbRcvHandler _rgbRcvHandler;
+  tempReadHandler _tempReadHandler;
+  tempRcvHandler _tempRcvHandler;
+  humidReadHandler _humidReadHandler;
+  humidRcvHandler _humidRcvHandler;
 
   void _infoHandler(RF24NetworkHeader header);
   void _powerHandler(RF24NetworkHeader header);
   void _switchHandler(RF24NetworkHeader header);
   void _rgbHandler(RF24NetworkHeader header);
+  void _tempHandler(RF24NetworkHeader header);
+  void _humidHandler(RF24NetworkHeader header);
 
   bool _write(uint16_t toAddr, uint16_t type, const void* message);
 };

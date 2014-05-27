@@ -11,12 +11,17 @@
 #ifndef __RF24_SENSOR_NET_TYPES_H__
 #define __RF24_SENSOR_NET_TYPES_H__
 
+#include <stdint.h>
+#include <stdbool.h>
+
 /* Defined packet types */
 enum pkt_type {
-  PKT_INFO   = 0, /* Requesting info about a node or device */
-  PKT_POWER  = 1, /* Info regarding power status for this node */
-  PKT_SWITCH = 2, /* Info regarding an attached switch */
-  PKT_RGB    = 3, /* Info regarding an attached RGB (dimmer) switch */
+  PKT_INFO   = 0, /* General info for this node */
+  PKT_POWER  = 1, /* Power status for this node */
+  PKT_SWITCH = 2, /* Digital (on/off) switches */
+  PKT_RGB    = 3, /* RGB (dimmer) switches */
+  PKT_TEMP   = 4, /* Temperature sensors */
+  PKT_HUMID  = 5  /* Humidity sensors */
 };
 
 /* Packet containing info about this node's power supply. */
@@ -43,6 +48,18 @@ struct pkt_rgb_t {
 		     0 for no timer. */
 };
 
+/* Packet for readings from a temperature sensor. */
+struct pkt_temp_t {
+  uint16_t id; /* ID for the sensor, unique to this node. */
+  int16_t temp; /* Temperature reading from the sensor, in 0.1 degree C. */
+};
+
+/* Packet for readings from a humidity sensor. */
+struct pkt_humid_t {
+  uint16_t id; /* ID for the sensor, unique to this node. */
+  uint16_t humidity; /* Relative humidity from the sensor, in 0.1%. */
+};
+
 typedef void (*infoReadHandler)(uint16_t fromAddr);
 typedef void (*infoWriteHandler)(uint16_t fromAddr, uint16_t newAddr);
 typedef void (*infoRcvHandler)(uint16_t fromAddr);
@@ -62,4 +79,11 @@ typedef void (*rgbWriteHandler)(uint16_t fromAddr, uint16_t id,
 				char rgb[3], uint32_t timer);
 typedef void (*rgbRcvHandler)(uint16_t fromAddr, uint16_t id,
 			      char rgb[3], uint32_t timer);
+
+typedef void (*tempReadHandler)(uint16_t fromAddr, uint16_t id);
+typedef void (*tempRcvHandler)(uint16_t fromAddr, uint16_t id, int16_t temp);
+
+typedef void (*humidReadHandler)(uint16_t fromAddr, uint16_t id);
+typedef void (*humidRcvHandler)(uint16_t fromAddr, uint16_t id,
+				uint16_t humidity);
 #endif
