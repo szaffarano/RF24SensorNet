@@ -37,7 +37,7 @@ bool RF24SensorNet::readHumid(uint16_t toAddr, uint16_t id)
   payload.id = id;
   payload.humidity = 0;
 
-  bool ok = _write(toAddr, PKT_TEMP+32, &payload);
+  bool ok = _write(toAddr, PKT_HUMID+32, &payload);
   return ok;
 }
 

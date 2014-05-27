@@ -76,6 +76,12 @@ void RF24SensorNet::update(void)
     case PKT_RGB:
       _rgbHandler(header);
       break;
+    case PKT_TEMP:
+      _tempHandler(header);
+      break;
+    case PKT_HUMID:
+      _humidHandler(header);
+      break;
     }
   }
 }
@@ -94,6 +100,12 @@ bool RF24SensorNet::_write(uint16_t toaddr, uint16_t type, const void* message)
     break;
   case PKT_RGB:
     size = sizeof(pkt_rgb_t);
+    break;
+  case PKT_TEMP:
+    size = sizeof(pkt_temp_t);
+    break;
+  case PKT_HUMID:
+    size = sizeof(pkt_humid_t);
     break;
   default:
     // No such type :-(
