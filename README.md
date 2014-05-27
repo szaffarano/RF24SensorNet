@@ -3,6 +3,8 @@ This library defines a collection of sensor and actuator types, and
 provides a convenient way to send data and commands to/from them using
 RF24Network as a transport.
 
+This library relies on the RF24Network library. I've tested against [manicbug's original code](http://maniacbug.github.io/RF24Network/) and regularly run it with the [TMRh20 fork](http://tmrh20.github.io/RF24Network/).
+
 ## Overview
 The network consists of several nodes, each consisting of an
 Arduino-compatible MCU and an nRF24L01 radio module. Each node can have
@@ -67,4 +69,5 @@ with these functions:
 
 ### MqttRelay
 The MqttRelay sketch runs on an Ethernet-equipped Arduino. It registers
-to an MQTT bus.
+to an MQTT bus. It is designed to run with the Arduino's standard Ethernet library, and uses [pubsubclient](https://github.com/knolleary/pubsubclient) to talk to MQTT.
+
