@@ -33,6 +33,9 @@ All messages sent across the network are one-one.
   status of an attached switch.
 * **rgb**.  Sends three values for red, green and blue channels. Used to
   control RGB lights, or fading lights.
+* **temp**. A temperature sensor. Currently only supports reading/sending
+  temperatures, so it's not (yet) suitable for controlling thermostats.
+* **humid**. A humidity sensor. Sends relative humidity.
 
 ## Usage
 ### Sending messages
