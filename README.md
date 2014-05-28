@@ -110,6 +110,8 @@ relayed from MQTT in to the RF24 network, it should be sent with a topic
 describe what class of device is sending or recieving this packet, and are
 listed in the `pkt_type` enum in `RF24SensorNet_types.h`:
 
+Type       | ID
+-----------|---
 PKT_INFO   | 0
 PKT_POWER  | 1
 PKT_SWITCH | 2
@@ -120,6 +122,8 @@ PKT_HUMID  | 5
 The command type specifies if this packet contains device data, or a
 read or write request. These are:
 
+Type                 | ID
+---------------------|---
 Device data          | 0
 Device read request  | 32
 Device write request | 64
