@@ -3,9 +3,13 @@ This library defines a collection of sensor and actuator types, and
 provides a convenient way to send data and commands to/from them using
 RF24Network as a transport.
 
-This library relies on the RF24Network library. I've tested against
-[manicbug's original code](http://maniacbug.github.io/RF24Network/) and
-regularly run it with the [TMRh20 fork](http://tmrh20.github.io/RF24Network/).
+# Requirements
+This library relies on the RF24 and RF24Network libraries. There are several
+forks, but I'm regularly running it against TMRh20's code: [RF24](http://tmrh20.github.io/RF24/), and [RF24Network](http://tmrh20.github.io/RF24Network).
+
+I've also tested against [maniacbug's original RF24Network library](http://maniacbug.github.io/RF24Network/).
+
+The MqttRelay sketch also uses the [pubsubclient](https://github.com/knolleary/pubsubclient) library.
 
 ## Overview
 The network consists of several nodes, each consisting of an
