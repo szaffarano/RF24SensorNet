@@ -30,6 +30,21 @@ There are three basic message types:
 
 All messages sent across the network are one-one.
 
+## Supported device types
+* **info**. Used to retrieve information about a node, including the status
+  of all attached devices.
+* **power**. Used to retrieve information about a node's power supply.
+  Can be used to show battery status, or how much power is being supplied
+  by an attached solar panel.
+* **switch**. A basic digital on/off switch. This can be used to switch
+  relays attached to a node on and off, or a node can use it to report
+  status of an attached switch.
+* **rgb**.  Sends three values for red, green and blue channels. Used to
+  control RGB lights, or fading lights.
+* **temp**. A temperature sensor. Currently only supports reading/sending
+  temperatures, so it's not (yet) suitable for controlling thermostats.
+* **humid**. A humidity sensor. Sends relative humidity.
+
 ## Status
 The info device type is currently unimplemented. I'm intending to use
 it to retrieve the status of all devices attached to a node, and use it
@@ -45,21 +60,6 @@ The library is currently a fair bit heavier than it really needs to be -
 it'll run on ATtiny processors, but some juggling might be required to get
 a sketch in to their 8KB of flash. Optimizing code size and rearranging to
 make it easier to add new device types is next on the list of things to do.
-
-## Supported device types
-* **info**. Used to retrieve information about a node, including the status
-  of all attached devices.
-* **power**. Used to retrieve information about a node's power supply.
-  Can be used to show battery status, or how much power is being supplied
-  by an attached solar panel.
-* **switch**. A basic digital on/off switch. This can be used to switch
-  relays attached to a node on and off, or a node can use it to report
-  status of an attached switch.
-* **rgb**.  Sends three values for red, green and blue channels. Used to
-  control RGB lights, or fading lights.
-* **temp**. A temperature sensor. Currently only supports reading/sending
-  temperatures, so it's not (yet) suitable for controlling thermostats.
-* **humid**. A humidity sensor. Sends relative humidity.
 
 ## Usage
 ### Sending messages
