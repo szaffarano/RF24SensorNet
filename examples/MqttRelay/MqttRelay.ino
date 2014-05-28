@@ -89,13 +89,13 @@ void sendHumidMqtt(uint16_t fromAddr, uint16_t id, uint16_t humidity) {
   mqttClient.publish(constructMqttTopic(fromAddr, PKT_HUMID), mqttPayload);
 }
 
-bool send_power_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
+bool sendPowerRF24(uint16_t toaddr, unsigned char type, char * buffer) {
   (void)buffer;
   // Not possible to set power state, so assume it's a req.
   return sensornet.readPower(toaddr);
 }
 
-bool send_switch_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
+bool sendSwitchRF24(uint16_t toaddr, unsigned char type, char * buffer) {
   char * token;
   uint32_t id;
   bool state;
@@ -115,7 +115,7 @@ bool send_switch_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
   }
 }
 
-bool send_rgb_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
+bool sendRgbRF24(uint16_t toaddr, unsigned char type, char * buffer) {
   char * token;
   uint32_t id;
   char rgb[3];
@@ -139,7 +139,7 @@ bool send_rgb_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
   }
 }
 
-bool send_temp_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
+bool sendTempRF24(uint16_t toaddr, unsigned char type, char * buffer) {
   // We currently assume it's not possible to write a temp, so the
   // only requests we'd see come in over MQTT would be reads.
   // That may change if somebody ever wants to control a thermostat.
@@ -155,7 +155,7 @@ bool send_temp_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
   return sensornet.readTemp(toaddr, id);
 }
 
-bool send_humid_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
+bool sendHumidRF24(uint16_t toaddr, unsigned char type, char * buffer) {
   // It's even less likely that anybody would want to write a humidty
   // ready. Right? Right?
   char * token;
@@ -183,19 +183,19 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 
   switch(type % 32) {
   case PKT_POWER:
-    send_power_rf24(toaddr, type, buffer);
+    sendPowerRF24(toaddr, type, buffer);
     break;
   case PKT_SWITCH:
-    send_switch_rf24(toaddr, type, buffer);
+    sendSwitchRF24(toaddr, type, buffer);
     break;
   case PKT_RGB:
-    send_rgb_rf24(toaddr, type, buffer);
+    sendRgbRF24(toaddr, type, buffer);
     break;
   case PKT_TEMP:
-    send_temp_rf24(toaddr, type, buffer);
+    sendTempRF24(toaddr, type, buffer);
     break;
   case PKT_HUMID:
-    send_humid_rf24(toaddr, type, buffer);
+    sendHumidRF24(toaddr, type, buffer);
     break;
   }
 }
