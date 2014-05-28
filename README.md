@@ -31,6 +31,12 @@ The info device type is currently unimplemented. I'm intending to use
 it to retrieve the status of all devices attached to a node, and use it
 to set the node's RF24Network address.
 
+Temperature devices are currently read-only.
+
+Note that temperature and humidity readings are passed around on the
+RF24Network as integers, multiplied by 10. 15.6 degrees will be
+represented in the packet as `156`, and 43.5% humidity as `435`.
+
 The library is currently a fair bit heavier than it really needs to be -
 it'll run on ATtiny processors, but some juggling might be required to get
 a sketch in to their 8KB of flash. Optimizing code size and rearranging to
@@ -85,6 +91,54 @@ to an MQTT bus. It is designed to run with the Arduino's standard Ethernet
 library, and uses [pubsubclient](https://github.com/knolleary/pubsubclient)
 to talk to MQTT.
 
-Before attempting to use it, you'll need to update mqttBroker,
-mqttClientID, mqttUsername and mqttPassword to match your network. They're
-towards the top of the sketch and commented.
+Before attempting to use it, you'll need to update `mqttBroker`,
+`mqttClientID`, `mqttUsername` and `mqttPassword` to match your network.
+They're towards the top of the sketch and commented.
+
+The sketch registers as RF24Network device ID 0 - the root node. Any node
+on the RF24 network may address a packet to 0, and if it's a valid
+RF24SensorNet packet it will be relayed to MQTT.
+
+#### MQTT packet format
+Messages relayed from the RF24 network on to MQTT will be sent with a
+topic `sensornet/out/*nodeAddress*/*packetType*`. For a message to be
+relayed from MQTT in to the RF24 network, it should be sent with a topic
+`sensornet/in/*nodeAddress*/*packetType*`.
+
+`nodeAddress` is the RF24Network address of the source/destination node.
+`packetType` is the sum of the device type and a command type. Device types
+describe what class of device is sending or recieving this packet, and are
+listed in the `pkt_type` enum in `RF24SensorNet_types.h`:
+
+PKT_INFO   | 0
+PKT_POWER  | 1
+PKT_SWITCH | 2
+PKT_RGB    | 3
+PKT_TEMP   | 4
+PKT_HUMID  | 5
+
+The command type specifies if this packet contains device data, or a
+read or write request. These are:
+
+Device data          | 0
+Device read request  | 32
+Device write request | 64
+
+For example, when the node at RF24 network address 012 sends a packet
+about its current battery reading, it will be broadcast on MQTT with a
+topic of `sensornet/out/12/1`. If an MQTT client wants to get a
+temperature reading from the node at RF24 network address 03, it
+should broadcast an MQTT message with a topic of `sensornet/in/3/36`.
+And when an MQTT client would like to change the colour of a light
+attached to a node at RF24 network address 021, it should use a topic of
+`sensornet/in/21/67`.
+
+For both inbound and outbound traffic, the MQTT payload should be the
+contents of the appropriate packet type, in order, delineated with pipe
+(`|`) characters. Again, these are described in `RF24SensorNet_types.h`.
+Most types are numeric. For boolean types, use `1` for true and `0` for
+false.
+
+An MQTT command requesting the switch with device ID 3 be turned on will
+have a payload of `3|1|0`. An MQTT packet with a temperature reading
+of 27.3 degrees from device ID 0 will have a payload of `0|27.3`.
