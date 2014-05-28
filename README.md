@@ -3,7 +3,9 @@ This library defines a collection of sensor and actuator types, and
 provides a convenient way to send data and commands to/from them using
 RF24Network as a transport.
 
-This library relies on the RF24Network library. I've tested against [manicbug's original code](http://maniacbug.github.io/RF24Network/) and regularly run it with the [TMRh20 fork](http://tmrh20.github.io/RF24Network/).
+This library relies on the RF24Network library. I've tested against
+[manicbug's original code](http://maniacbug.github.io/RF24Network/) and
+regularly run it with the [TMRh20 fork](http://tmrh20.github.io/RF24Network/).
 
 ## Overview
 The network consists of several nodes, each consisting of an
@@ -23,6 +25,16 @@ There are three basic message types:
   any type of schedule defined by the sending node.
 
 All messages sent across the network are one-one.
+
+## Status
+The info device type is currently unimplemented. I'm intending to use
+it to retrieve the status of all devices attached to a node, and use it
+to set the node's RF24Network address.
+
+The library is currently a fair bit heavier than it really needs to be -
+it'll run on ATtiny processors, but some juggling might be required to get
+a sketch in to their 8KB of flash. Optimizing code size and rearranging to
+make it easier to add new device types is next on the list of things to do.
 
 ## Supported device types
 * **info**. Used to retrieve information about a node, including the status
@@ -69,5 +81,10 @@ with these functions:
 
 ### MqttRelay
 The MqttRelay sketch runs on an Ethernet-equipped Arduino. It registers
-to an MQTT bus. It is designed to run with the Arduino's standard Ethernet library, and uses [pubsubclient](https://github.com/knolleary/pubsubclient) to talk to MQTT.
+to an MQTT bus. It is designed to run with the Arduino's standard Ethernet
+library, and uses [pubsubclient](https://github.com/knolleary/pubsubclient)
+to talk to MQTT.
 
+Before attempting to use it, you'll need to update mqttBroker,
+mqttClientID, mqttUsername and mqttPassword to match your network. They're
+towards the top of the sketch and commented.
