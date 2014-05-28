@@ -69,6 +69,26 @@ void sendRgbMqtt(uint16_t fromAddr, uint16_t id,
   mqttClient.publish(constructMqttTopic(fromAddr, PKT_RGB), mqttPayload);
 }
 
+void sendTempMqtt(uint16_t fromAddr, uint16_t id, int16_t temp) {
+  // Arduino's snprintf doesn't do floats.
+  // So I'm about to commit an atrocity to fake it.
+  int integral = (int)(temp/10);
+  int fractional = temp-(integral*10);
+
+  char mqttPayload[24];
+  snprintf(mqttPayload, 24, "%i|%i|%i.%i", fromAddr, id, integral, fractional);
+  mqttClient.publish(constructMqttTopic(fromAddr, PKT_TEMP), mqttPayload);
+}
+
+void sendHumidMqtt(uint16_t fromAddr, uint16_t id, uint16_t humidity) {
+  int integral = (int)(humidity/10);
+  int fractional = humidity-(integral*10);
+
+  char mqttPayload[24];
+  snprintf(mqttPayload, 24, "%i|%i|%i.%i", fromAddr, id, integral, fractional);
+  mqttClient.publish(constructMqttTopic(fromAddr, PKT_HUMID), mqttPayload);
+}
+
 bool send_power_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
   (void)buffer;
   // Not possible to set power state, so assume it's a req.
@@ -119,6 +139,34 @@ bool send_rgb_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
   }
 }
 
+bool send_temp_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
+  // We currently assume it's not possible to write a temp, so the
+  // only requests we'd see come in over MQTT would be reads.
+  // That may change if somebody ever wants to control a thermostat.
+  char * token;
+  uint32_t id;
+  // int16_t temp;
+
+  token = strtok(buffer, "|");
+  id = strtol(token, NULL, 10);
+  // token = strtok(NULL, "|");
+  // temp = strtol(token, NULL, 10);
+
+  return sensornet.readTemp(toaddr, id);
+}
+
+bool send_humid_rf24(uint16_t toaddr, unsigned char type, char * buffer) {
+  // It's even less likely that anybody would want to write a humidty
+  // ready. Right? Right?
+  char * token;
+  uint32_t id;
+
+  token = strtok(buffer, "|");
+  id = strtol(token, NULL, 10);
+
+  return sensornet.readHumid(toaddr, id);
+}
+
 void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   char buffer[length+1];
   strncpy(buffer, (char*)payload, length);
@@ -142,6 +190,12 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
     break;
   case PKT_RGB:
     send_rgb_rf24(toaddr, type, buffer);
+    break;
+  case PKT_TEMP:
+    send_temp_rf24(toaddr, type, buffer);
+    break;
+  case PKT_HUMID:
+    send_humid_rf24(toaddr, type, buffer);
     break;
   }
 }
@@ -167,6 +221,8 @@ void setup() {
   sensornet.addPowerRcvHandler(sendPowerMqtt);
   sensornet.addSwitchRcvHandler(sendSwitchMqtt);
   sensornet.addRgbRcvHandler(sendRgbMqtt);
+  sensornet.addTempRcvHandler(sendTempMqtt);
+  sensornet.addHumidRcvHandler(sendHumidMqtt);
 }
 
 void loop() {
